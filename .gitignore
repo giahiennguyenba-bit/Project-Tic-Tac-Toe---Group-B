@@ -1,0 +1,13 @@
+# Binaries
+game.exe
+*.exe
+*.o
+*.obj
+
+# Raylib specific (if any)
+lib/
+include/
+
+# MSYS2/MinGW build traces
+*.log
+*.tmp
