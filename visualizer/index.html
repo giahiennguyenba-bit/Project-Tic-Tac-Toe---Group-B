@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive visualizer for understanding the win condition logic in Chaos Tic Tac Toe - a 6x7 grid, 5-in-a-row game.">
+    <title>Chaos Tic Tac Toe — Win Condition Visualizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-left">
+            <span class="header-icon">🐱</span>
+            <h1>Chaos Tic Tac Toe — C Code Memory Visualizer</h1>
+        </div>
+        <div class="header-right">
+            <label class="speed-control">
+                <span class="speed-label">Speed:</span>
+                <input type="range" id="speed-slider" min="1" max="10" value="4">
+                <span id="speed-value">4x</span>
+            </label>
+            <button id="btn-reset" class="btn btn-reset" title="Reset everything">⟲ Reset</button>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <!-- ========== LEFT PANEL: Code Trace ========== -->
+        <section class="panel panel-code" aria-label="Memory Execution Trace">
+            <div class="panel-header">
+                <span class="panel-icon">✦</span>
+                <h2>Memory Execution Trace</h2>
+                <span class="panel-icon">✦</span>
+            </div>
+
+            <!-- File Tabs -->
+            <nav class="code-tabs" role="tablist" aria-label="Source files">
+                <button class="tab active" role="tab" data-tab="main" aria-selected="true">src/main.c</button>
+                <button class="tab" role="tab" data-tab="logic_h">headers/logic.h</button>
+                <button class="tab" role="tab" data-tab="logic_c">src/logic.c</button>
+            </nav>
+
+            <!-- Code Display -->
+            <div class="code-container" id="code-container">
+                <pre class="code-block"><code id="code-display"></code></pre>
+            </div>
+
+            <!-- Pivot Info -->
+            <div class="pivot-box" id="pivot-box">
+                <p id="pivot-text">Select a scenario to begin visualization.</p>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <span class="legend-item"><span class="legend-dot legend-match"></span> Condition matched</span>
+                <span class="legend-sep">|</span>
+                <span class="legend-item"><span class="legend-dot legend-error"></span> Current target/Error</span>
+            </div>
+
+            <!-- Step Controls -->
+            <div class="step-controls">
+                <button id="btn-first" class="btn btn-step" title="First step">&lt;&lt; First</button>
+                <button id="btn-prev" class="btn btn-step" title="Previous step">&lt; Prev</button>
+                <button id="btn-play" class="btn btn-play" title="Auto-play animation">▶ Play</button>
+                <button id="btn-next" class="btn btn-step" title="Next step">Next &gt;</button>
+                <button id="btn-last" class="btn btn-step" title="Last step">Last &gt;&gt;</button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p class="step-counter" id="step-counter">Step 0 of 0</p>
+        </section>
+
+        <!-- ========== RIGHT PANEL: Game Board ========== -->
+        <section class="panel panel-board" aria-label="Game Board Visualizer">
+            <div class="board-header">
+                <h2 class="board-title">CHAOS TICTACTOE</h2>
+                <p class="board-subtitle" id="board-subtitle">Select a scenario below</p>
+            </div>
+
+            <!-- Simulate Full Execution -->
+            <div class="action-group">
+                <div class="action-label">🔍 Simulate Full C/H Execution Flow</div>
+                <div class="scan-buttons">
+                    <button class="btn btn-scan" data-scan="horizontal">🔎 Scan Horizontal</button>
+                    <button class="btn btn-scan" data-scan="vertical">🔎 Scan Vertical</button>
+                    <button class="btn btn-scan" data-scan="check-draw">🔴 Check Draw</button>
+                </div>
+                <div class="scan-buttons">
+                    <button class="btn btn-scan" data-scan="diag-down">🔎 Diag Down (\\)</button>
+                    <button class="btn btn-scan" data-scan="diag-up">🔎 Diag Up (/)</button>
+                </div>
+            </div>
+
+            <!-- Error Simulation -->
+            <div class="action-group error-group">
+                <select id="error-select" class="error-select" aria-label="Select error type">
+                    <option value="horiz-oob">① Horizontal OOB (c overflow)</option>
+                    <option value="vert-oob">② Vertical OOB (r overflow)</option>
+                    <option value="diag-oob">③ Diagonal OOB (r+c overflow)</option>
+                    <option value="neg-index">④ Negative Index (r underflow)</option>
+                    <option value="uninit">⑤ Uninitialized Board Access</option>
+                </select>
+                <button id="btn-error" class="btn btn-error">⚠ Simulate Memory Crash</button>
+                <button id="btn-show-fix" class="btn btn-fix">💡 How to avoid?</button>
+            </div>
+            <!-- Crash Info Card -->
+            <div class="crash-info-card" id="crash-info-card" style="display:none;">
+                <div class="crash-header">
+                    <span class="crash-icon">💥</span>
+                    <span class="crash-title" id="crash-title">Memory Error</span>
+                </div>
+                <div class="crash-body">
+                    <div class="crash-section">
+                        <div class="crash-label">🐛 What went wrong:</div>
+                        <p class="crash-text" id="crash-what"></p>
+                    </div>
+                    <div class="crash-section">
+                        <div class="crash-label">✅ How the code avoids it:</div>
+                        <p class="crash-text crash-fix" id="crash-fix"></p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Load Scenarios -->
+            <div class="action-group">
+                <div class="action-label">⚡ QUICK LOAD SCENARIOS:</div>
+                <div class="scenario-buttons">
+                    <button class="btn btn-scenario" data-scenario="horiz">Horiz (—)</button>
+                    <button class="btn btn-scenario" data-scenario="vert">Vert (|)</button>
+                    <button class="btn btn-scenario" data-scenario="diag-down">Diag (\\)</button>
+                    <button class="btn btn-scenario" data-scenario="diag-up">Diag (/)</button>
+                    <button class="btn btn-scenario" data-scenario="draw">Draw</button>
+                </div>
+            </div>
+
+            <!-- Grid -->
+            <div class="grid-wrapper">
+                <div class="grid" id="grid" role="grid" aria-label="6 by 7 game grid">
+                    <!-- Cells injected by JS -->
+                </div>
+                <!-- OOB ghost column -->
+                <div class="ghost-col" id="ghost-col" aria-hidden="true"></div>
+            </div>
+            <!-- OOB ghost row -->
+            <div class="ghost-row" id="ghost-row" aria-hidden="true"></div>
+        </section>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>
