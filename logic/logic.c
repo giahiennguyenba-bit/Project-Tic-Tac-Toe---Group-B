@@ -3,45 +3,46 @@
 
 // Developer 2 (Bob): Core Game Rules and Win Conditions
 
-int checkWin(char p) {
-    // 1. Horizontal Check (5 in a row)
-    for (int r = 0; r < ROWS; r++) {
-        for (int c = 0; c <= COLS - 5; c++) {
-            if (board[r][c] == p && board[r][c+1] == p && 
-                board[r][c+2] == p && board[r][c+3] == p && board[r][c+4] == p) {
-                return 1;
-            }
-        }
+int checkWin(int r, int c, char p) {
+    if (r < 0 || r >= ROWS || c < 0 || c >= COLS) return 0;
+
+    // 1. Horizontal Check (Full Row r)
+    int count = 0;
+    for (int j = 0; j < COLS; j++) {
+        if (board[r][j] == p) {
+            if (++count >= 5) return 1;
+        } else count = 0;
     }
 
-    // 2. Vertical Check (5 in a row)
-    for (int c = 0; c < COLS; c++) {
-        for (int r = 0; r <= ROWS - 5; r++) {
-            if (board[r][c] == p && board[r+1][c] == p && 
-                board[r+2][c] == p && board[r+3][c] == p && board[r+4][c] == p) {
-                return 1;
-            }
-        }
+    // 2. Vertical Check (Full Column c)
+    count = 0;
+    for (int i = 0; i < ROWS; i++) {
+        if (board[i][c] == p) {
+            if (++count >= 5) return 1;
+        } else count = 0;
     }
 
     // 3. Diagonal Check (Top-Left to Bottom-Right)
-    for (int r = 0; r <= ROWS - 5; r++) {
-        for (int c = 0; c <= COLS - 5; c++) {
-            if (board[r][c] == p && board[r+1][c+1] == p && 
-                board[r+2][c+2] == p && board[r+3][c+3] == p && board[r+4][c+4] == p) {
-                return 1;
-            }
-        }
+    // Find the starting point of the diagonal passing through (r, c)
+    count = 0;
+    int startR = r, startC = c;
+    while (startR > 0 && startC > 0) { startR--; startC--; }
+    while (startR < ROWS && startC < COLS) {
+        if (board[startR][startC] == p) {
+            if (++count >= 5) return 1;
+        } else count = 0;
+        startR++; startC++;
     }
 
     // 4. Diagonal Check (Bottom-Left to Top-Right)
-    for (int r = 4; r < ROWS; r++) {
-        for (int c = 0; c <= COLS - 5; c++) {
-            if (board[r][c] == p && board[r-1][c+1] == p && 
-                board[r-2][c+2] == p && board[r-3][c+3] == p && board[r-4][c+4] == p) {
-                return 1;
-            }
-        }
+    count = 0;
+    startR = r; startC = c;
+    while (startR < ROWS - 1 && startC > 0) { startR++; startC--; }
+    while (startR >= 0 && startC < COLS) {
+        if (board[startR][startC] == p) {
+            if (++count >= 5) return 1;
+        } else count = 0;
+        startR--; startC++;
     }
 
     return 0;

@@ -6,44 +6,44 @@
 // Developer 5 (Eve): Main Integration
 
 int main(void) {
-    // 1. Initialize Board (Alice)
-    initBoard();
+  // 1. Initialize Board (Alice)
+  initBoard();
 
-    // 2. Initialize UI (Dave)
-    InitUI();
+  // 2. Initialize UI (Dave)
+  InitUI();
 
-    // Core Loop
-    while (!WindowShouldClose()) {
-        
-        // Handle Input & State Changes
-        if (gameStatus == 0) {
-            // Wait for user to take a successful turn
-            if (HandleInput()) {
-                // Check Win Condition (Bob)
-                char lastPiece = (currentPlayer == 1) ? 'X' : 'O';
-                if (checkWin(lastPiece)) {
-                    gameStatus = 1; // Game Over
-                } else {
-                    // Switch Player
-                    currentPlayer = (currentPlayer == 1) ? 2 : 1;
-                }
-            }
+  // Core Loop
+  while (!WindowShouldClose()) {
+
+    // Handle Input & State Changes
+    if (gameStatus == 0) {
+      // Wait for user to take a successful turn
+      if (HandleInput()) {
+        // Check Win Condition (Bob)
+        char lastPiece = (currentPlayer == 1) ? 'X' : 'O';
+        if (checkWin(lastRow, lastCol, lastPiece)) {
+          gameStatus = 1; // Game Over
         } else {
-            // Restart logic
-            if (IsKeyPressed(KEY_R)) {
-                initBoard();
-                gameStatus = 0;
-                currentPlayer = 1;
-                currentMode = MODE_MOVE;
-            }
+          // Switch Player
+          currentPlayer = (currentPlayer == 1) ? 2 : 1;
         }
-
-        // Draw Frame (Dave)
-        DrawGame();
+      }
+    } else {
+      // Restart logic
+      if (IsKeyPressed(KEY_R)) {
+        initBoard();
+        gameStatus = 0;
+        currentPlayer = 1;
+        currentMode = MODE_MOVE;
+      }
     }
 
-    // Cleanup
-    CloseUI();
+    // Draw Frame (Dave)
+    DrawGame();
+  }
 
-    return 0;
+  // Cleanup
+  CloseUI();
+
+  return 0;
 }

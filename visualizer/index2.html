@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Visualizer for the optimized 'Radial Win Check' algorithm in Chaos Tic Tac Toe.">
+    <title>Chaos Tic Tac Toe — Radial Scan Visualizer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .radial-label {
+            font-size: 0.75rem;
+            color: var(--accent-cyan);
+            margin-bottom: 4px;
+            display: block;
+        }
+        .dir-indicator {
+            position: absolute;
+            font-size: 1.2rem;
+            color: var(--accent-orange);
+            pointer-events: none;
+            z-index: 5;
+            transition: all 0.3s ease;
+        }
+        .cell-check-active {
+            border: 3px solid var(--accent-cyan) !important;
+            box-shadow: 0 0 15px var(--accent-cyan);
+            z-index: 3;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-left">
+            <span class="header-icon">🚀</span>
+            <h1>Chaos Tic Tac Toe — Optimized "Radial Scan" (Visualizer 2)</h1>
+        </div>
+        <div class="header-right">
+            <label class="speed-control">
+                <span class="speed-label">Speed:</span>
+                <input type="range" id="speed-slider" min="1" max="10" value="6">
+                <span id="speed-value">6x</span>
+            </label>
+            <button id="btn-reset" class="btn btn-reset" title="Reset everything">⟲ Reset</button>
+        </div>
+    </header>
+
+    <main class="app-main">
+        <!-- ========== LEFT PANEL: Code Trace ========== -->
+        <section class="panel panel-code" aria-label="Execution Trace">
+            <div class="panel-header">
+                <span class="panel-icon">★</span>
+                <h2>Optimized Execution Trace</h2>
+                <span class="panel-icon">★</span>
+            </div>
+
+            <!-- File Tabs -->
+            <nav class="code-tabs" role="tablist">
+                <button class="tab active" role="tab" data-tab="logic_c">src/logic.c (Optimized)</button>
+                <button class="tab" role="tab" data-tab="logic_h">headers/logic.h</button>
+            </nav>
+
+            <!-- Code Display -->
+            <div class="code-container" id="code-container">
+                <pre class="code-block"><code id="code-display"></code></pre>
+            </div>
+
+            <!-- Pivot Info -->
+            <div class="pivot-box" id="pivot-box">
+                <p id="pivot-text">Click any cell on the board to simulate a move and see the win check spread.</p>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <span class="legend-item"><span class="legend-dot" style="background:var(--accent-cyan)"></span> Last Move</span>
+                <span class="legend-item"><span class="legend-dot legend-match"></span> Count match</span>
+                <span class="legend-item"><span class="legend-dot legend-error"></span> Blocked/Mismatch</span>
+            </div>
+
+            <!-- Step Controls -->
+            <div class="step-controls">
+                <button id="btn-first" class="btn btn-step">&lt;&lt; First</button>
+                <button id="btn-prev" class="btn btn-step">&lt; Prev</button>
+                <button id="btn-play" class="btn btn-play">▶ Play</button>
+                <button id="btn-next" class="btn btn-step">Next &gt;</button>
+                <button id="btn-last" class="btn btn-step">Last &gt;&gt;</button>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <p class="step-counter" id="step-counter">Step 0 of 0</p>
+        </section>
+
+        <!-- ========== RIGHT PANEL: Game Board ========== -->
+        <section class="panel panel-board">
+            <div class="board-header">
+                <h2 class="board-title">RADIAL SCAN CHECK</h2>
+                <p class="board-subtitle" id="board-subtitle">Visualizing O(K) complexity check</p>
+            </div>
+
+            <div class="action-group">
+                <span class="radial-label">1. CHOOSE A PATTER TO TEST:</span>
+                <div class="scenario-buttons">
+                    <button class="btn btn-scenario" data-scenario="horiz">Almost Horiz</button>
+                    <button class="btn btn-scenario" data-scenario="vert">Almost Vert</button>
+                    <button class="btn btn-scenario" data-scenario="diag-down">Almost Diag \</button>
+                    <button class="btn btn-scenario" data-scenario="diag-up">Almost Diag /</button>
+                </div>
+            </div>
+
+            <div class="action-group">
+                <span class="radial-label">2. CLICK ON THE GRID TO PLACE THE "LAST PIECE":</span>
+                <div class="grid-wrapper">
+                    <div class="grid" id="grid">
+                        <!-- Injected by JS -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-group" style="margin-top:20px; text-align:center; opacity:0.8;">
+                <p style="font-size:0.8rem; color: #444;">
+                    Instead of scanning 42 cells, we only check 4 directions from the click point.<br>
+                    Green cells = Match | Red cells = Blocked/Different | Blue = Start Point
+                </p>
+            </div>
+        </section>
+    </main>
+
+    <script src="app2.js"></script>
+</body>
+</html>

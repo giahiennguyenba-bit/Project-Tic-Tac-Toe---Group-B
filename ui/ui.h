@@ -12,6 +12,7 @@ typedef enum {
 extern ActionMode currentMode;
 extern int currentPlayer; // 1 or 2
 extern int gameStatus;    // 0 = playing, 1 = game over, 2 = tie
+extern int lastRow, lastCol; // Tracks the most recent move
 
 void InitUI(void);
 void CloseUI(void);

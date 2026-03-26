@@ -99,6 +99,8 @@ void DrawGame(void) {
     EndDrawing();
 }
 
+int lastRow = -1, lastCol = -1;
+
 int HandleInput(void) {
     if (gameStatus == 1) return 0; // Game over, no input on board
 
@@ -123,6 +125,8 @@ int HandleInput(void) {
             if (currentMode == MODE_MOVE) {
                 if (isValidMove(r, c)) {
                     setCell(r, c, piece);
+                    lastRow = r;
+                    lastCol = c;
                     return 1; // Turn taken
                 }
             } 
@@ -130,12 +134,16 @@ int HandleInput(void) {
                 if (useBomb(currentPlayer, r, c)) {
                     applyGravity(); // Pieces fall down!
                     currentMode = MODE_MOVE; // revert mode
+                    lastRow = -1; // Reset since gravity moved pieces
+                    lastCol = -1;
                     return 1;
                 }
             } 
             else if (currentMode == MODE_STEAL) {
                 if (useSteal(currentPlayer, r, c)) {
                     currentMode = MODE_MOVE;
+                    lastRow = r; 
+                    lastCol = c;
                     return 1;
                 }
             }
